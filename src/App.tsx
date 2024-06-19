@@ -15,7 +15,7 @@ function App() {
   const [newTodo, setNewTodo] = useState<string>("");
 
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
-  const [sort, setSort] = useState<"name" | "date" | "status">("name");
+  const [sort, setSort] = useState<"name" | "date" | "status">("date");
 
   const toggleTodo = (id: number) => {
     setTodos((prevTodos) =>
@@ -30,8 +30,6 @@ function App() {
   };
 
   const editTodo = (id: number, newText: string) => {
-    console.log(newText);
-
     setTodos((prevTodos) =>
       prevTodos.map((todo) =>
         todo.id === id ? { ...todo, label: newText } : todo
@@ -96,45 +94,46 @@ function App() {
             Add
           </Button>
         </form>
-        <div className="flex">
-          <Button
-            onClick={() => setFilter("all")}
-            className={`mr-2 ${filter === "all" ? "bg-blue-900" : ""}`}
-          >
-            All
-          </Button>
-          <Button
-            onClick={() => setFilter("completed")}
-            className={`mr-2 ${filter === "completed" ? "bg-blue-900" : ""}`}
-          >
-            Completed
-          </Button>
-          <Button
-            onClick={() => setFilter("pending")}
-            className={`${filter === "pending" ? "bg-blue-900" : ""}`}
-          >
-            Pending
-          </Button>
-        </div>
 
         <div className="mb-4">
           <span>Pending: {pendingCount}</span> |{" "}
           <span>Completed: {completedCount}</span>
         </div>
-        <div>
-          <span className="mr-4">Sort by:</span>
-          <select
-            value={sort}
-            onChange={(e) =>
-              setSort(e.target.value as "name" | "date" | "status")
-            }
-            className="p-2 mb-10 border rounded bg-[#61dafbaa] text-white font-bold"
-          >
-            <option value="name">Name</option>
-            <option value="date">Date</option>
-            <option value="status">Status</option>
-          </select>
+
+        {/* Filter and order  */}
+        <div className="flex gap-8">
+          <div>
+            <span className="mr-4">Filter by:</span>
+            <select
+              value={filter}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setFilter(e.target.value as "all" | "completed" | "pending");
+              }}
+              className="p-2 mb-10 border rounded bg-[#61dafbaa] text-white font-bold"
+            >
+              <option value="all">All</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+
+          <div>
+            <span className="mr-4">Sort by:</span>
+            <select
+              value={sort}
+              onChange={(e) =>
+                setSort(e.target.value as "name" | "date" | "status")
+              }
+              className="p-2 mb-10 border rounded bg-[#61dafbaa] text-white font-bold"
+            >
+              <option value="date">Date</option>
+              <option value="name">Name</option>
+              <option value="status">Status</option>
+            </select>
+          </div>
         </div>
+
         <List
           todos={sortedTodos}
           toggleTodo={toggleTodo}
