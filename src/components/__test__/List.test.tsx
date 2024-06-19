@@ -1,7 +1,8 @@
 import "@testing-library/jest-dom/jest-globals";
 import "@testing-library/jest-dom";
 
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
+import { fireEvent } from "@testing-library/dom";
 import { List } from "../List"; // Adjust the import path if necessary
 import { TodoItem } from "../../App";
 
@@ -35,6 +36,7 @@ describe("List Component", () => {
     expect(getByText("Test Todo 3")).toBeInTheDocument();
 
     // Toggle checkbox
+
     fireEvent.click(getAllByRole("checkbox")[0]);
     expect(toggleTodo).toHaveBeenCalledWith(1);
 
