@@ -5,6 +5,7 @@ import { Button, Input } from "keep-react";
 import { Counter } from "./components/Counter";
 import { FilterAndSort } from "./components/FilterAndSort";
 import { useFilter } from "./hooks/useFilter";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 export type TodoItem = {
   id: number;
@@ -13,9 +14,19 @@ export type TodoItem = {
   createdAt: Date;
 };
 
+type Inputs = {
+  addTodo: string;
+};
+
 function App() {
   const [todos, setTodos] = useState<TodoItem[]>([]);
-  const [newTodo, setNewTodo] = useState<string>("");
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Inputs>();
 
   const { filter, setFilter, sort, setSort, sortedTodos } = useFilter(todos);
 
@@ -39,19 +50,19 @@ function App() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // Allowing using enter to submit
-    e.preventDefault();
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    const { addTodo: label } = data;
     // Filter empty string values
-    if (newTodo.trim()) {
+    if (label.trim()) {
       const newTask: TodoItem = {
         id: Date.now(),
-        label: newTodo,
+        label,
         completed: false,
         createdAt: new Date(),
       };
+
       setTodos((prevTodos) => [...prevTodos, newTask]);
-      setNewTodo(""); // Clear input field
+      reset();
     }
   };
 
@@ -59,21 +70,27 @@ function App() {
     <div className="min-h-screen flex justify-center p-8">
       <div className="max-w-lg w-full mt-10">
         <form
-          onSubmit={handleSubmit}
-          className="mb-4 flex items-center space-x-2"
+          onSubmit={handleSubmit(onSubmit)}
+          className="mb-4"
         >
-          <Input
-            value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
-            placeholder="Add new todo"
-            className="flex-grow p-2 border rounded text-white bg-[#61dafbaa]"
-          />
-          <Button
-            type="submit"
-            className="py-2 px-4 rounded bg-orange-500 hover:bg-orange-700"
-          >
-            Add
-          </Button>
+          <div className="mb-4 flex items-center space-x-2">
+            <Input
+              placeholder="Add new todo"
+              className="flex-grow p-2 border rounded text-white bg-[#61dafbaa]"
+              {...register("addTodo", { required: true })}
+            />
+
+            <Button
+              type="submit"
+              className="py-2 px-4 rounded bg-orange-500 hover:bg-orange-700"
+            >
+              Add
+            </Button>
+          </div>
+
+          {errors.addTodo && (
+            <span className="text-red-500">* This field is required</span>
+          )}
         </form>
 
         <Counter todos={todos} />
