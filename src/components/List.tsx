@@ -3,7 +3,7 @@ import { TodoItem } from "../App";
 import { useState } from "react";
 
 type Props = {
-  todos: Array<TodoItem>;
+  todos: TodoItem[];
   toggleTodo: (id: number) => void;
   deleteTodo: (id: number) => void;
   editTodo: (id: number, newLabel: string) => void;
@@ -19,6 +19,11 @@ export const List = ({ todos, toggleTodo, deleteTodo, editTodo }: Props) => {
   };
 
   const commitEdit = (id: number) => {
+    // Prevent to add empty value
+    if (!editingValue.trim()) {
+      setEditingId(null);
+      return;
+    }
     editTodo(id, editingValue);
     setEditingId(null);
     setEditingValue("");
@@ -40,6 +45,8 @@ export const List = ({ todos, toggleTodo, deleteTodo, editTodo }: Props) => {
             <Input
               value={editingValue}
               onChange={(e) => setEditingValue(e.target.value)}
+              //Autofocus onMount
+              autoFocus
               // Save on blur
               onBlur={() => commitEdit(todo.id)}
               // Save on enter
@@ -52,21 +59,23 @@ export const List = ({ todos, toggleTodo, deleteTodo, editTodo }: Props) => {
             />
           ) : (
             <span
-              className={`flex-1 ${todo.completed ? "line-through" : ""}`}
               onDoubleClick={() => startEditing(todo.id, todo.label)}
+              className={`flex-1 ${
+                todo.completed ? "line-through" : ""
+              } text-ellipsis overflow-hidden`}
             >
               {todo.label}
             </span>
           )}
           <Button
             onClick={() => startEditing(todo.id, todo.label)}
-            className="bg-yellow-500 text-white px-2 py-1 rounded"
+            className="bg-yellow-500 hover:bg-yellow-700 text-white px-2 py-1 rounded"
           >
             Edit
           </Button>
           <Button
             onClick={() => deleteTodo(todo.id)}
-            className="bg-red-500 text-white px-2 py-1 rounded"
+            className="bg-red-500 hover:bg-red-700 text-white px-2 py-1 rounded"
           >
             Delete
           </Button>
