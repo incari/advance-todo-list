@@ -4,7 +4,7 @@
 
 ## Demo
 
-Visit the deployed application: [User list]()
+Visit the deployed application: [Advance to-do](https://advance-todo-list-five.vercel.app/)
 
 ## Installation
 
@@ -36,8 +36,7 @@ To set up this project locally, follow these steps:
 ## Description
 
 As requested I used the following libs:
-- Typescript
-- Tamstack query (react query) for data fetching and cache
-- Material UI for styled components
-- React hook form to manage form data 
-- React router dom for the routing system (I used a old version Routes + Route but I know that the new version have different ways to create this browser router system)
+- Typescript.
+- Tailwind Css.
+- keep-react for styled components.
+- React-hook-form to manage form data.
